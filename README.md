@@ -1,6 +1,11 @@
 # Vulkan-BrickBreaker
 A brick breaker game. My first Vulkan project (for learning pupose)
 
+### Result:
+
+![demo](demo/brickbreaker.jpg)
+
+
 ### Some links that helped me a lot :
 Vulkan Tutorial:
 https://vulkan-tutorial.com/Introduction
