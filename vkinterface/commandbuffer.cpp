@@ -6,6 +6,7 @@ CommandBuffer::CommandBuffer(LogicalDevice* device, CommandPool* pool)
     : VkDevObject(device)
     , m_commandbuffer(VK_NULL_HANDLE)
     , m_pool(pool)
+    , m_valid(true)
 {
 }
 
@@ -14,6 +15,7 @@ CommandBuffer::CommandBuffer(LogicalDevice* device, CommandPool* pool, VkCommand
     : VkDevObject(device)
     , m_commandbuffer(buffer)
     , m_pool(pool)
+    , m_valid(true)
 {
 }
 
@@ -140,8 +142,14 @@ void CommandPool::cleanup()
 //--------------------------------------------------------------
 void CommandPool::reset()
 {
-    VkCommandPoolResetFlags flags = 0;
+    VkCommandPoolResetFlags flags = 0; // see VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
     vkResetCommandPool(m_parent->get(), m_pool, flags);
+    for(auto it=m_allocated.begin();it!=m_allocated.end();++it)
+    {
+        (*it)->invalidate();
+        delete *it;
+    }
+    m_allocated.clear();
 }
 
 //--------------------------------------------------------------
@@ -149,6 +157,7 @@ CommandBuffer* CommandPool::alloc()
 {
     CommandBuffer* cmd = new CommandBuffer(m_parent, this);
     cmd->initialize();
+    m_allocated.push_back(cmd);
     return cmd;
 }
 
@@ -169,7 +178,11 @@ std::vector<CommandBuffer*> CommandPool::alloc(uint32_t count)
     }
 
     std::vector<CommandBuffer*> cmds(count);
-    for(uint32_t i=0;i<count;++i) cmds[i] = new CommandBuffer(m_parent, this, buffers[i]);
+    for(uint32_t i=0;i<count;++i)
+    {
+        cmds[i] = new CommandBuffer(m_parent, this, buffers[i]);
+        m_allocated.push_back(cmds[i]);
+    }
     return cmds;
 }
 

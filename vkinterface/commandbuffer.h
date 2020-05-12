@@ -26,9 +26,13 @@ public:
 
     VkCommandBuffer& get() {return m_commandbuffer;}
 
+    bool isValid() {return m_valid;}
+    void invalidate(){m_valid = false;}
+
 protected:
     VkCommandBuffer m_commandbuffer;
     CommandPool* m_pool;
+    bool m_valid;
 };
 
 //--------------------------------------------------------------
@@ -53,6 +57,7 @@ public:
 protected:
     VkCommandPool m_pool;
     Queue* m_queue;
+    std::vector<CommandBuffer*> m_allocated;
 };
 
 

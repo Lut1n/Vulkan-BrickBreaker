@@ -48,10 +48,6 @@ void DrawCommandBuffer::beginDraw(int frameIndex)
 
     DrawCmdPool::instance(currentFrameIndex)->reset();
     m_cmdBuffer[currentFrameIndex] = DrawCmdPool::instance(currentFrameIndex)->alloc(1)[0];
-
-
-    // auto global_desc = m_descriptorSet->get();
-
     m_cmdBuffer[currentFrameIndex]->begin();
 
     VkRenderPassBeginInfo renderPassInfo = {};
