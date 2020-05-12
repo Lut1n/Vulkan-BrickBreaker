@@ -104,13 +104,6 @@ void DrawCommandBuffer::drawEntity(Drawable* drawable)
     VkCommandBuffer cmdbuf= m_cmdBuffer[currentFrameIndex]->get();
     PipelineLayout* layout = m_pipeline->getLayout();
 
-
-    std::vector<VkDescriptorSet> descriptorsToBind;
-
-    Descriptors* descriptor = drawable->descriptors;
-    VkDescriptorSet perobj_desc = descriptor->get(currentFrameIndex);
-
-
     if(m_changed[MESH])
     {
         VertexBuffer* mesh = m_pendingMesh->buffer;
@@ -122,19 +115,26 @@ void DrawCommandBuffer::drawEntity(Drawable* drawable)
         vkCmdBindIndexBuffer(cmdbuf, mesh->getIndexBuffer()->get(), 0, VK_INDEX_TYPE_UINT32);
     }
 
-    // if(m_changed[CAMERA])
+    if(m_changed[CAMERA])
     {
-        descriptorsToBind.push_back(m_pendingCamera->descriptors->get(currentFrameIndex));
-    }
-    // if(m_changed[MATERIAL])
-    {
-        descriptorsToBind.push_back(m_pendingMaterial->descriptors->get(currentFrameIndex));
+        VkDescriptorSet desc = m_pendingCamera->descriptors->get(currentFrameIndex);
+        uint32_t binding = 0;
+        vkCmdBindDescriptorSets(cmdbuf, VK_PIPELINE_BIND_POINT_GRAPHICS, layout->get(), binding, 1, &desc, 0, nullptr);
     }
 
-    descriptorsToBind.push_back(perobj_desc);
+    if(m_changed[MATERIAL])
+    {
+        VkDescriptorSet desc = m_pendingMaterial->descriptors->get(currentFrameIndex);
+        uint32_t binding = 1;
+        vkCmdBindDescriptorSets(cmdbuf, VK_PIPELINE_BIND_POINT_GRAPHICS, layout->get(), binding, 1, &desc, 0, nullptr);
+    }
 
-    vkCmdBindDescriptorSets(cmdbuf, VK_PIPELINE_BIND_POINT_GRAPHICS, layout->get(),
-                            0, descriptorsToBind.size(), descriptorsToBind.data(), 0, nullptr);
+    // for each drawable
+    {
+        VkDescriptorSet desc = drawable->descriptors->get(currentFrameIndex);
+        uint32_t binding = 2;
+        vkCmdBindDescriptorSets(cmdbuf, VK_PIPELINE_BIND_POINT_GRAPHICS, layout->get(), binding, 1, &desc, 0, nullptr);
+    }
 
     // if has index buffer
     vkCmdDrawIndexed(cmdbuf, m_pendingMesh->buffer->count(), 1, 0, 0, 0);
