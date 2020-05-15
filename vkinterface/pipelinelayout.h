@@ -13,7 +13,7 @@ public:
     void initialize() override;
     void cleanup() override;
 
-    VkPipeline& get() {return m_layout;}
+    VkPipelineLayout& get() {return m_layout;}
     VkDescriptorSetLayout& getDescriptorSetLayout(uint32_t index) {return m_descriptorSetLayouts[index];}
 
 protected:
