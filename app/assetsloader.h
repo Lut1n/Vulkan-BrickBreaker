@@ -6,11 +6,11 @@
 #include "vkinterface/texture.h"
 #include "vkinterface/descriptorset.h"
 
-static const std::string MODEL_BLOCK_PATH = "models/vkgame_block.obj";
-static const std::string MODEL_BAR_PATH = "models/vkgame_bar.obj";
-static const std::string MODEL_BALL_PATH = "models/vkgame_ball.obj";
-static const std::string MODEL_BACKGROUND_PATH = "models/vkgame_background.obj";
-static const std::string MODEL_PLATFORM_PATH = "models/vkgame_platform.obj";
+static const std::string MODEL_BLOCK_PATH = "models/vkgame_block.obj.lut1";
+static const std::string MODEL_BAR_PATH = "models/vkgame_bar.obj.lut1";
+static const std::string MODEL_BALL_PATH = "models/vkgame_ball.obj.lut1";
+static const std::string MODEL_BACKGROUND_PATH = "models/vkgame_background.obj.lut1";
+static const std::string MODEL_PLATFORM_PATH = "models/vkgame_platform.obj.lut1";
 static const std::string TEXTURE_PATH = "textures/handdrawing.jpg";
 
 
